@@ -4,7 +4,7 @@ const methodOverride = require('method-override')
 const flash = require('connect-flash')
 const session = require('express-session')
 const path = require('path')
-const { pages } = require('./routes')
+const { pages, apis } = require('./routes')
 const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
@@ -30,6 +30,7 @@ app.use((req, res, next) => {
   res.locals.Currentuser = getUser(req)
   next()
 })
+app.use('/api', apis)
 app.use(pages)
 
 app.listen(port, () => {
