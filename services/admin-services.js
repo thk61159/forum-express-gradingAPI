@@ -6,7 +6,7 @@ const adminServices = {
       nest: true,
       include: [Category]
     })
-      .then(restaurants => cb(null, restaurants))
+      .then(restaurants => cb(null, { restaurants }))
       .catch(err => cb(err))
   }
 }

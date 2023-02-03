@@ -1,14 +1,11 @@
+const adminServices = require('../../services/admin-services')
 const { Restaurant, User, Category } = require('../../models')
-const { localFileHandler } = require('../../helpers/file-helpers')// 照片上傳
+const { localFileHandler } = require('../../helpers/file-helpers') // 照片上傳
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
-      raw: true,
-      nest: true,
-      include: [Category]
-    })
-      .then(restaurants => res.render('admin/restaurants', { restaurants }))
-      .catch(err => next(err))
+    adminServices.getRestaurants(req, (err, data) =>
+      err ? next(err) : res.render('admin/restaurants', data)
+    )
   },
   createRestaurant: (req, res, next) => {
     return Category.findAll({
@@ -20,7 +17,8 @@ const adminController = {
       .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, adress, openingHours, description, categoryId } = req.body
+    const { name, tel, adress, openingHours, description, categoryId } =
+			req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     localFileHandler(file)
@@ -55,15 +53,17 @@ const adminController = {
     Promise.all([
       Restaurant.findByPk(id, { raw: true }),
       Category.findAll({ raw: true })
-    ]).then(([restaurant, categories]) => {
-      if (!restaurant) throw new Error("Restaurant didn't exist!")
-      res.render('admin/edit-restaurant', { restaurant, categories })
-    })
+    ])
+      .then(([restaurant, categories]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/edit-restaurant', { restaurant, categories })
+      })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
     const { id } = req.params
-    const { name, tel, address, openingHours, description, categoryId } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+			req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     Promise.all(
@@ -109,8 +109,7 @@ const adminController = {
   },
   patchUser: (req, res, next) => {
     const { id } = req.params
-    return User
-      .findByPk(id)
+    return User.findByPk(id)
       .then(user => {
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
