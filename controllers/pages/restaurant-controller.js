@@ -1,50 +1,10 @@
 const { Category, Restaurant, Comment, User, Favorite } = require('../../models')
-const { getOffset, getPagination } = require('../../helpers/pagination-helper')
+const restaurantServices = require('../../services/restaurant-services')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
-    const DEFAULT_LIMIT = 9
-    const page = Number(req.query.page) || 1
-    const limit = Number(req.query.limit) || DEFAULT_LIMIT
-    const categoryId = Number(req.query.categoryId) || ''
-    const offset = getOffset(limit, page)
-    return Promise.all([
-      Restaurant.findAndCountAll({
-        include: Category,
-        where: {
-          ...(categoryId ? { categoryId } : {}) // 檢查 categoryId 是否為空值
-        },
-        limit,
-        offset,
-        raw: true,
-        nest: true
-      }),
-      Category.findAll({
-        raw: true
-      })
-    ])
-      .then(([restaurants, categories]) => {
-        // map後的()是IIFE嗎？不是！！是省略一個大括號，並用括號區分是在return object
-        // const data = restaurants.rows.map(r => ({
-        // ...r,
-        // description: r.description.substring(0, 50),
-        // isFavorite: req.user && req.user.FavoritedRestaurants.map(fr => fr.id).includes(r.id)
-        // &&(logical operator) if the left hand side is true, then evaluates as the right hand side
-        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
-        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(fr => fr.id)
-        const data = restaurants.rows.map(r => ({
-          ...r,
-          description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id),
-          isLiked: likedRestaurantsId.includes(r.id)
-        }))
-        return res.render('restaurants', {
-          restaurants: data,
-          categories,
-          categoryId,
-          pagination: getPagination(limit, page, restaurants.count)
-        })
-      })
-      .catch(err => next(err))
+    restaurantServices.getRestaurants(req, (err, data) =>
+      err ? next(err) : res.render('restaurants', data)
+    )
   },
   getRestaurant: (req, res, next) => {
     const { id } = req.params

@@ -24,10 +24,10 @@ const restaurantServices = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user?.FavoritedRestaurants
-          ? req.user.map(fr => fr.id)
+          ? req.user.FavoritedRestaurants.map(fr => fr.id)
           : []
         const likedRestaurantsId = req.user?.LikedRestaurants
-          ? req.user.map(lr => lr.id)
+          ? req.user.LikedRestaurants.map(lr => lr.id)
           : []
         const data = restaurants.rows.map(r => ({
           ...r,
