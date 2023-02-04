@@ -17,8 +17,7 @@ const adminController = {
       .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, adress, openingHours, description, categoryId } =
-			req.body
+    const { name, tel, adress, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     localFileHandler(file)
@@ -62,8 +61,7 @@ const adminController = {
   },
   putRestaurant: (req, res, next) => {
     const { id } = req.params
-    const { name, tel, address, openingHours, description, categoryId } =
-			req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     Promise.all(
