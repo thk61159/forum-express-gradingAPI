@@ -10,6 +10,7 @@ module.exports = {
   },
   apiErrorHandler (err, req, res, next) {
     if (err instanceof Error) {
+      res.locals.error = err
       res.status(err.status || 500).json({
         status: 'error',
         message: `${err.name}: ${err.message}`
