@@ -1,6 +1,5 @@
+const { Restaurant, Category, User } = require('../../models')
 const adminServices = require('../../services/admin-services')
-const { Restaurant, User, Category } = require('../../models')
-const { localFileHandler } = require('../../helpers/file-helpers') // 照片上傳
 const adminController = {
   getRestaurants: (req, res, next) => {
     adminServices.getRestaurants(req, (err, data) =>
@@ -17,26 +16,12 @@ const adminController = {
       .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, adress, openingHours, description, categoryId } = req.body
-    if (!name) throw new Error('Restaurant name is required!')
-    const { file } = req
-    localFileHandler(file)
-      .then(filePath => {
-        Restaurant.create({
-          name,
-          tel,
-          adress,
-          openingHours,
-          description,
-          image: filePath || null,
-          categoryId
-        })
-      })
-      .then(() => {
-        req.flash('success_messages', 'restaurant was successfully created')
-        res.redirect('/admin/restaurants')
-      })
-      .catch(err => next(err))
+    adminServices.postRestaurant(req, (err, data) => {
+      if (err) return next(err)
+      req.flash('success_messages', 'restaurant was successfully created')
+      req.session.createdData = data
+      return res.redirect('/admin/restaurants')
+    })
   },
   getRestaurant: (req, res, next) => {
     const { id } = req.params
@@ -61,7 +46,8 @@ const adminController = {
   },
   putRestaurant: (req, res, next) => {
     const { id } = req.params
-    const { name, tel, address, openingHours, description, categoryId } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+			req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     Promise.all(
