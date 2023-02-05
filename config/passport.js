@@ -13,7 +13,6 @@ passport.use(
       passwordField: 'password',
       passReqToCallback: true
     },
-    // authenticate user
     (req, email, password, cb) => {
       User.findOne({ where: { email } }).then(user => {
         if (!user) {

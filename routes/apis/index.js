@@ -20,6 +20,6 @@ router.post(
     // Handle error
     return res.status(401).send({ success: false, message: err })
   }
-) // 新增這行，設定 disable sessions
+)
 router.use('/', apiErrorHandler)
 module.exports = router

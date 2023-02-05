@@ -49,9 +49,9 @@ const userController = {
         { model: User, as: 'Followings' },
         {
           model: Comment,
-          include: Restaurant
+          include: Restaurant,
           // attributes: ['Comment.Restaurant.id'],
-          // group: ['Comment.Restaurant.id']
+          group: ['Restaurants.id']
         } //  qurey anthor table in include table
       ]
     })
