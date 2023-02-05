@@ -1,3 +1,4 @@
+const userServices = require('../../services/user-services')
 const jwt = require('jsonwebtoken')
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -20,6 +21,10 @@ const userController = {
     } catch (err) {
       next(err)
     }
+  },
+  signUp: (req, res, next) => {
+    // error-first callback
+    userServices.signUp(req, (err, data) => err ? next(err) : res.json(data))
   }
 }
 module.exports = userController
