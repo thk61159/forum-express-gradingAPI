@@ -44,5 +44,8 @@
     "sequelize-mock": "^0.10.2",
     "sinon": "^11.1.2",
     "supertest": "^6.1.6"
-  }
+  },
+  "engines": {
+		"node": ">=18 <19"
+	}
 }

@@ -66,7 +66,10 @@ passport.use(
         { model: User, as: 'Followings' }
       ]
     })
-      .then(user => cb(null, user.toJSON()))
+      .then(user => {
+        // console.log(user.toJSON())
+        return cb(null, user.toJSON())
+      })
       .catch(err => cb(err))
   })
 )

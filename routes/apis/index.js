@@ -19,6 +19,7 @@ router.post(
   userController.signIn,
   function (err, req, res, next) {
     // Handle error
+    console.log('test')
     return res.status(401).send({ success: false, message: err })
   }
 )

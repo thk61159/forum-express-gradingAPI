@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs')
+const { raw } = require('express')
 const { localFileHandler } = require('../../helpers/file-helpers') // 照片上傳
 const { User, Restaurant, Favorite, Like, Followship, Comment } = require('../../models')
 const userServices = require('../../services/user-services')
